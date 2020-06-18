@@ -1,0 +1,25 @@
+#include "stm32f4xx.h"           
+
+int main(){
+	
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+	GPIOA->MODER |= GPIO_MODER_MODER6_1;
+	GPIOA->AFR[0] |= GPIO_AFRL_AFRL6_1;
+	
+	RCC->APB1ENR |= RCC_APB1ENR_TIM3EN;
+	
+	TIM3->PSC &= ~TIM_PSC_PSC;
+	TIM3->PSC |= 15U; //16000/1+psc=1kHz
+	
+	TIM3->ARR &= ~TIM_PSC_PSC;
+	TIM3->ARR |= 1000U;
+	
+	TIM3->CCR1 &= ~TIM_PSC_PSC;
+	TIM3->CCR1 |= 100U; // %10 duty cycle
+	
+	TIM3->CCMR1 |= TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;
+	TIM3->CCER |= TIM_CCER_CC1E;
+	TIM3->CR1 |= TIM_CR1_CEN;
+
+	while(1);
+}
