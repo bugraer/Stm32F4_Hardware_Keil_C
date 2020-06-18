@@ -1,0 +1,21 @@
+#include "stm32f4xx.h" 
+
+unsigned int adc;
+float deger;    
+
+int main ()  { 
+   
+    int i; 
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+    GPIOA->MODER |= GPIO_MODER_MODER0_0 | GPIO_MODER_MODER0_1; //PA'nin 0.pini analog için alternatif fonk 11. 
+    RCC->APB2ENR |= RCC_APB2ENR_ADC1EN; //ADC1 APB2 clock
+    ADC1->CR2 |= ADC_CR2_ADON;//ADC'ye enerji veriliyor. 
+    ADC1->CR2 |=ADC_CR2_CONT;//Devamli Mod
+    ADC1->CR2 |= ADC_CR2_SWSTART; //Analog-Dijital Çevrime Basla
+
+    while(1){
+        for(i=0;i<5000;i++);
+        adc=ADC1->DR;
+        deger= ((float)adc/4095)*3;   
+    }
+}
