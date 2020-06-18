@@ -1,1 +1,1 @@
-# stm32f407vgtx
+Storing the codes that should be used to drive the electric motor with stm32. Practical use of ADC, PWM and interrupts.
