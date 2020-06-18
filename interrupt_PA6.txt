@@ -1,0 +1,22 @@
+#include "stm32f4xx.h"
+int led=14;
+void EXTI0_IRQHandler(){
+	EXTI->PR |= EXTI_PR_PR0;	
+	GPIOD->ODR &= ~(1UL<<led);
+}
+
+int main(){
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN |	RCC_AHB1ENR_GPIODEN;
+	GPIOD->MODER |= GPIO_MODER_MODER14_0;
+
+	EXTI->IMR |= EXTI_IMR_IM0;
+	EXTI->RTSR |= EXTI_RTSR_TR0;
+	
+	SYSCFG->EXTICR[0] &= ~SYSCFG_EXTICR1_EXTI0;
+	
+	NVIC_EnableIRQ(EXTI0_IRQn); //EXTI0_IRQn=6
+	
+	while(1){
+		GPIOD->ODR |= (1UL<<led);
+	}
+}
