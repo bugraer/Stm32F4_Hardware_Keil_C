@@ -1,0 +1,22 @@
+#include "stm32f4xx.h"
+int hiz=0, dd;
+
+void SysTick_Handler(){
+dd= hiz / 60;
+	//seri porta dd yazdir devir/dakika = hiz / (60*1sn) ; ardindan sifirla
+	//adc, usart, port tanimlamalari eksik
+	dd=0;
+	hiz=0;
+}
+int main(){
+	SysTick->LOAD &= ~SysTick_LOAD_RELOAD_Msk;
+SysTick->LOAD |=  (SysTick_LOAD_RELOAD_Msk &  16000000UL);
+SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk;
+SysTick->CTRL |= SysTick_CTRL_ENABLE_Msk;
+
+	NVIC_EnableIRQ(SysTick_IRQn);
+
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN;
+
+	while(1);	
+} 
